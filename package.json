@@ -1,0 +1,30 @@
+{
+  "name": "enviante",
+  "version": "1.0.0",
+  "description": "Class registry and intent dispatch",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/quarterto/Enviante"
+  },
+  "keywords": [
+    "dispatch",
+    "class",
+    "intent"
+  ],
+  "author": "Matt Brennan <matt@153.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quarterto/Enviante/issues"
+  },
+  "homepage": "https://github.com/quarterto/Enviante",
+  "dependencies": {
+    "babel-runtime": "^5.1.11"
+  },
+  "devDependencies": {
+    "babel": "^5.1.11"
+  }
+}
