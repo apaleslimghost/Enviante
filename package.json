@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/quarterto/Enviante",
   "dependencies": {
-    "babel-runtime": "^5.1.11"
+    "babel-runtime": "^5.1.11",
+    "curry": "^1.2.0"
   },
   "devDependencies": {
     "babel": "^5.1.11"
