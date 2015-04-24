@@ -1,7 +1,7 @@
 export SHELL := /bin/bash
 export PATH  := $(shell npm bin):$(PATH)
 
-BABEL_OPTS = --optional runtime
+BABEL_OPTS = --optional runtime --optional es7.classProperties
 SRC_FILES  = $(wildcard src/*.js)
 LIB_FILES  = $(patsubst src/%.js,lib/%.js,$(SRC_FILES))
 
@@ -12,4 +12,4 @@ lib/%.js: src/%.js
 	babel $(BABEL_OPTS) -o $@ $<
 
 test: all test.js
-	mocha -r babel/register -u require
+	mocha -r babel/register

@@ -1,26 +1,5 @@
 var curry = require("curry");
-
-var classRegistry = new WeakMap();
-var instanceRegistry = new WeakMap();
 var handleIntent = Symbol("handleIntent");
-
-function registerClass(klass) {
-	classRegistry.set(klass.displayName || klass.name, klass);
-}
-
-function registerInstance(obj) {
-	var instances = instanceRegistry.get(obj.constructor) || new Map();
-	instances.set(obj.id, obj);
-	instanceRegistry.set(obj.constructor, instances);
-}
-
-function getClass(name) {
-	return classRegistry.get(name);
-}
-
-function getInstance(klass, intent) {
-	return classRegistry.get(name);
-}
 
 function Intent(path, data) {
 	return {path, data};
@@ -32,15 +11,31 @@ Intent.scope = function(...scope) {
 	};
 };
 
-var canReceive = curry(function _canReceive(intent, klass) {
-	return klass.receives.some(path =>
-		path.every((part, i) => intent.path[i] === part)
-	);
-});
-
-function dispatch(intent) {
-	var klass = registry.find(canReceive(intent));
-	if(klass) {
-		getInstance(klass, intent)[handleIntent](intent).forEach(dispatch);
+function find(xs, fn) {
+	for(var i = 0, l = xs.length; i < l; ++i) {
+		if(fn(xs[i], i, xs)) return xs[i];
 	}
 }
+
+class Dispatcher {
+	registry = [];
+
+	canReceive(intent, receiver) {
+		return receiver.receives.some(path =>
+			path.every((part, i) => intent.path[i] === part)
+		);
+	}
+
+	dispatch(intent) {
+		var receiver = find(this.registry, receiver => this.canReceive(intent, receiver));
+		if(receiver) {
+			(receiver(intent) || []).forEach(i => this.dispatch(i));
+		}
+	}
+
+	register(receiver) {
+		this.registry.push(receiver);
+	}
+}
+
+module.exports = Dispatcher;
