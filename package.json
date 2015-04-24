@@ -26,6 +26,10 @@
     "curry": "^1.2.0"
   },
   "devDependencies": {
-    "babel": "^5.1.11"
+    "babel": "^5.1.11",
+    "chai": "^2.2.0",
+    "mocha": "^2.2.4",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0"
   }
 }

@@ -10,3 +10,6 @@ all: $(LIB_FILES)
 lib/%.js: src/%.js
 	@mkdir -p $(@D)
 	babel $(BABEL_OPTS) -o $@ $<
+
+test: all test.js
+	mocha -r babel/register -u require
