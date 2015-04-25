@@ -2,7 +2,7 @@
   "name": "enviante",
   "version": "1.0.1",
   "description": "Class registry and intent dispatch",
-  "main": "index.js",
+  "main": "lib",
   "scripts": {
     "test": "make test"
   },

@@ -62,7 +62,7 @@ describe('Dispatcher', () => {
 			expect(r).not.to.have.been.called();
 		});
 
-		it('should dispatch the return values', done => {
+		it('should dispatch the return values', () => {
 			var d = new Dispatcher;
 
 			var r = sinon.stub(); r.receives = [['foo']]; r.returns([{path: ['bar']}, {path: ['baz']}]);
@@ -73,45 +73,9 @@ describe('Dispatcher', () => {
 			d.register(s);
 			d.register(t);
 
-			d.dispatch({path: ['foo']}).toArray(() => {
-				expect(s).to.have.been.called();
-				expect(t).to.have.been.called();
-				done();
-			});
-		});
-	});
-
-	describe('sinks', () => {
-		it('should receive unreceived intents', () => {
-			var i = {path: ['foo']};
-			var d = new Dispatcher;
-			var s = sinon.spy();
-			d.sink(s);
-			d.dispatch(i);
-			expect(s).to.have.been.calledWith(i);
-		});
-
-		it('should be able to remove sinks', () => {
-			var i = {path: ['foo']};
-			var d = new Dispatcher;
-			var s = sinon.spy();
-			d.sink(s);
-			d.dispatch(i);
-			expect(s).to.have.been.calledWith(i);
-			d.removeSink(s);
-			d.dispatch(i);
-			expect(s).not.to.have.been.calledTwice();
-		});
-
-		it('should be able to sink once', () => {
-			var i = {path: ['foo']};
-			var d = new Dispatcher;
-			var s = sinon.spy();
-			d.sinkOnce(s);
-			d.dispatch(i);
-			expect(s).to.have.been.calledWith(i);
-			d.dispatch(i);
-			expect(s).not.to.have.been.calledTwice();
+			d.dispatch({path: ['foo']});
+			expect(s).to.have.been.called();
+			expect(t).to.have.been.called();
 		});
 	});
 });
