@@ -62,7 +62,7 @@ describe('Dispatcher', () => {
 			expect(r).not.to.have.been.called;
 		});
 
-		it('should dispatch the return values', () => {
+		it('should dispatch the return values', done => {
 			var d = new Dispatcher;
 
 			var r = sinon.stub(); r.receives = [['foo']]; r.returns([{path: ['bar']}, {path: ['baz']}]);
@@ -73,9 +73,11 @@ describe('Dispatcher', () => {
 			d.register(s);
 			d.register(t);
 
-			d.dispatch({path: ['foo']});
-			expect(s).to.have.been.called;
-			expect(t).to.have.been.called;
+			d.dispatch({path: ['foo']}).toArray(() => {
+				expect(s).to.have.been.called;
+				expect(t).to.have.been.called;
+				done();
+			});
 		});
 	});
 });

@@ -1,5 +1,4 @@
-var curry = require("curry");
-var handleIntent = Symbol("handleIntent");
+var σ = require('highland');
 
 function Intent(path, data) {
 	return {path, data};
@@ -31,7 +30,7 @@ class Dispatcher {
 	dispatch(intent) {
 		var receiver = find(this.registry, receiver => this.canReceive(intent, receiver));
 		if(receiver) {
-			(receiver(intent) || []).forEach(i => this.dispatch(i));
+			return σ(receiver(intent) || []).flatMap(i => this.dispatch(i));
 		}
 	}
 
