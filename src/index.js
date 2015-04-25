@@ -1,15 +1,5 @@
 var σ = require('highland');
 
-function Intent(path, data) {
-	return {path, data};
-}
-
-Intent.scope = function(...scope) {
-	return function(path, data) {
-		return Intent([...scope, ...path], data)
-	};
-};
-
 function find(xs, fn) {
 	for(var i = 0, l = xs.length; i < l; ++i) {
 		if(fn(xs[i], i, xs)) return xs[i];
