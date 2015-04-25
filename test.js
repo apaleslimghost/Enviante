@@ -1,4 +1,4 @@
-var {expect} = require('chai').use(require('sinon-chai'));
+var {expect} = require('chai').use(require('sinon-chai')).use(require('dirty-chai'));
 var sinon = require('sinon');
 var Dispatcher = require('./lib');
 
@@ -31,7 +31,7 @@ describe('Dispatcher', () => {
 			r.receives = [['foo']];
 			d.register(r);
 			d.dispatch({path: ['foo']});
-			expect(r).to.have.been.called;
+			expect(r).to.have.been.called();
 		});
 
 		it('should pass the intent to the thing', () => {
@@ -50,7 +50,7 @@ describe('Dispatcher', () => {
 			r.receives = [['foo']];
 			d.register(r);
 			d.dispatch({path: ['foo', 'bar']});
-			expect(r).to.have.been.called;
+			expect(r).to.have.been.called();
 		});
 
 		it('shouldn\'t call a subpath thing without a subpath', () => {
@@ -59,7 +59,7 @@ describe('Dispatcher', () => {
 			r.receives = [['foo', 'bar']];
 			d.register(r);
 			d.dispatch({path: ['foo']});
-			expect(r).not.to.have.been.called;
+			expect(r).not.to.have.been.called();
 		});
 
 		it('should dispatch the return values', done => {
@@ -74,10 +74,44 @@ describe('Dispatcher', () => {
 			d.register(t);
 
 			d.dispatch({path: ['foo']}).toArray(() => {
-				expect(s).to.have.been.called;
-				expect(t).to.have.been.called;
+				expect(s).to.have.been.called();
+				expect(t).to.have.been.called();
 				done();
 			});
+		});
+	});
+
+	describe('sinks', () => {
+		it('should receive unreceived intents', () => {
+			var i = {path: ['foo']};
+			var d = new Dispatcher;
+			var s = sinon.spy();
+			d.sink(s);
+			d.dispatch(i);
+			expect(s).to.have.been.calledWith(i);
+		});
+
+		it('should be able to remove sinks', () => {
+			var i = {path: ['foo']};
+			var d = new Dispatcher;
+			var s = sinon.spy();
+			d.sink(s);
+			d.dispatch(i);
+			expect(s).to.have.been.calledWith(i);
+			d.removeSink(s);
+			d.dispatch(i);
+			expect(s).not.to.have.been.calledTwice();
+		});
+
+		it('should be able to sink once', () => {
+			var i = {path: ['foo']};
+			var d = new Dispatcher;
+			var s = sinon.spy();
+			d.sinkOnce(s);
+			d.dispatch(i);
+			expect(s).to.have.been.calledWith(i);
+			d.dispatch(i);
+			expect(s).not.to.have.been.calledTwice();
 		});
 	});
 });

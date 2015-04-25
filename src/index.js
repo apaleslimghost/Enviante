@@ -7,6 +7,7 @@ function find(xs, fn) {
 }
 
 class Dispatcher {
+	sinks = [];
 	constructor(receivers = []) {
 		this.registry = receivers;
 	}
@@ -22,6 +23,24 @@ class Dispatcher {
 		if(receiver) {
 			return σ(receiver(intent) || []).flatMap(i => this.dispatch(i));
 		}
+
+		this.sinks.forEach(sink => sink(intent));
+	}
+
+	sink(receiver) {
+		this.sinks.push(receiver);
+	}
+
+	sinkOnce(receiver) {
+		var self = this;
+		this.sink(function sink() {
+			self.removeSink(sink);
+			return receiver.apply(this, arguments);
+		});
+	}
+
+	removeSink(receiver) {
+		this.sinks = this.sinks.filter(sink => sink !== receiver);
 	}
 
 	register(receiver) {

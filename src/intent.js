@@ -8,4 +8,8 @@ Intent.scope = function(...scope) {
 	};
 };
 
+Intent.of = function(...scope) {
+	return data => Intent(scope, data);
+};
+
 module.exports = Intent;
