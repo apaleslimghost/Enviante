@@ -18,7 +18,9 @@ function find(xs, fn) {
 }
 
 class Dispatcher {
-	registry = [];
+	constructor(receivers = []) {
+		this.registry = receivers;
+	}
 
 	canReceive(intent, receiver) {
 		return receiver.receives.some(path =>

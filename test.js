@@ -18,6 +18,12 @@ describe('Dispatcher', () => {
 		d.dispatch({});
 	});
 
+	it('can take an array of things to register', () => {
+		function r() {}
+		var d = new Dispatcher([r]);
+		expect(d.registry).to.contain(r);
+	});
+
 	describe('dispatch', () => {
 		it('should send a thing to the thing that can receive it', () => {
 			var d = new Dispatcher;
