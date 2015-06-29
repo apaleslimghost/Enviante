@@ -1,11 +1,6 @@
 var σ = require('highland');
 var Intent = require('../intent');
-
-function find(xs, fn) {
-	for(var i = 0, l = xs.length; i < l; ++i) {
-		if(fn(xs[i], i, xs)) return xs[i];
-	}
-}
+var find = require('array-find');
 
 function streamCoerce(s) {
 	if(!s)               return σ([]);
