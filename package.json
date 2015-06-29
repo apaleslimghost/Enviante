@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/quarterto/Enviante",
   "dependencies": {
+    "es6-symbol": "^2.0.1",
     "highland": "^2.4.0"
   },
   "devDependencies": {

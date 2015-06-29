@@ -1,9 +1,17 @@
 var σ = require('highland');
+var Intent = require('../intent');
 
 function find(xs, fn) {
 	for(var i = 0, l = xs.length; i < l; ++i) {
 		if(fn(xs[i], i, xs)) return xs[i];
 	}
+}
+
+function streamCoerce(s) {
+	if(!s)               return σ([]);
+	if(σ.isStream(s))    return s;
+	if(Array.isArray(s)) return σ(s);
+	return σ([s]);
 }
 
 class Dispatcher {
@@ -17,17 +25,15 @@ class Dispatcher {
 		);
 	}
 
-	_dispatch(intent) {
+	dispatch(intent) {
 		var receiver = find(this.registry, receiver => this.canReceive(intent, receiver));
 		if(receiver) {
-			return σ(receiver(intent) || []).flatMap(i => this._dispatch(i));
+			return streamCoerce(receiver(intent)).flatMap(
+				i => Intent.isIntent(i) ? this.dispatch(i) : streamCoerce(i)
+			);
 		}
 
 		return σ([]);
-	}
-
-	dispatch(intent) {
-		return this._dispatch(intent).toArray(() => {});
 	}
 
 	registerOnce(receiver) {

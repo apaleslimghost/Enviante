@@ -1,6 +1,7 @@
 var {expect} = require('chai').use(require('sinon-chai')).use(require('dirty-chai'));
 var sinon = require('sinon');
-var Dispatcher = require('./lib');
+var Dispatcher = require('./');
+var Intent = require('./lib/intent');
 
 describe('Dispatcher', () => {
 	it('can be instantiated', () => {
@@ -65,7 +66,7 @@ describe('Dispatcher', () => {
 		it('should dispatch the return values', () => {
 			var d = new Dispatcher;
 
-			var r = sinon.stub(); r.receives = [['foo']]; r.returns([{path: ['bar']}, {path: ['baz']}]);
+			var r = sinon.stub(); r.receives = [['foo']]; r.returns([Intent(['bar']), Intent(['baz'])]);
 			var s = sinon.spy(); s.receives = [['bar']];
 			var t = sinon.spy(); t.receives = [['baz']];
 
@@ -73,7 +74,7 @@ describe('Dispatcher', () => {
 			d.register(s);
 			d.register(t);
 
-			d.dispatch({path: ['foo']});
+			d.dispatch({path: ['foo']}).apply(() => {});
 			expect(s).to.have.been.called();
 			expect(t).to.have.been.called();
 		});

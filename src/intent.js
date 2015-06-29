@@ -1,5 +1,8 @@
+var Symbol = require('es6-symbol');
+var intent = Symbol.for('intent');
+
 function Intent(path, data) {
-	return {path, data};
+	return {path, data, [intent]: true};
 }
 
 Intent.scope = function(...scope) {
@@ -10,6 +13,10 @@ Intent.scope = function(...scope) {
 
 Intent.of = function(...scope) {
 	return data => Intent(scope, data);
+};
+
+Intent.isIntent = function(obj) {
+	return obj[intent];
 };
 
 module.exports = Intent;
