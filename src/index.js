@@ -1,6 +1,7 @@
 var σ = require('highland');
 var Intent = require('../intent');
 var find = require('array-find');
+var debug = require('debug')('enviante');
 
 function streamCoerce(s) {
 	if(!s)               return σ([]);
@@ -28,6 +29,7 @@ class Dispatcher {
 			);
 		}
 
+		debug('Unhandled intent: ' + JSON.stringify(intent.path));
 		return σ([]);
 	}
 
