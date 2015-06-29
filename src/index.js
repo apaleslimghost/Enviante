@@ -36,16 +36,6 @@ class Dispatcher {
 		return σ([]);
 	}
 
-	registerOnce(receiver) {
-		var self = this;
-		once.receives = receiver.receives;
-		this.register(once);
-		function once() {
-			self.removeReceiver(once);
-			return receiver.apply(this, arguments);
-		}
-	}
-
 	removeReceiver(receiver) {
 		this.registry = this.registry.filter(r => r !== receiver);
 	}
