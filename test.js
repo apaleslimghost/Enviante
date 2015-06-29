@@ -78,5 +78,18 @@ describe('Dispatcher', () => {
 			expect(s).to.have.been.called();
 			expect(t).to.have.been.called();
 		});
+
+		it('should stream non-intent values', function(done) {
+			var d = new Dispatcher;
+			var r = sinon.stub(); r.receives = [['foo']];
+			r.returns('bar');
+
+			d.register(r);
+
+			d.dispatch({path: ['foo']}).toArray(xs => {
+				expect(xs).to.eql(['bar']);
+				done();
+			});
+		});
 	});
 });
