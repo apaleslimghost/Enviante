@@ -19,13 +19,13 @@ function controller(intent) {
 	}
 } controller.receives = [['route']];
 
-function view(data) {
-	return 'hello ' + data.greet;
+function view(intent) {
+	return 'hello ' + intent.data.greet;
 } view.receives = [['render']];
 
 var server = new Dispatcher([controller, view]);
 server.dispatch(Intent(['route'], {url: '/foo'})).apply(function(result) {
-	assert(result === 'hello world');
+	console.assert(result === 'hello world');
 });
 ```
 
