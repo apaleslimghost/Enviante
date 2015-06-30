@@ -2,7 +2,11 @@ var Symbol = require('es6-symbol');
 var intent = Symbol.for('intent');
 
 function Intent(path, data) {
-	return {path, data, [intent]: true};
+	return {
+		path: Array.isArray(path) ? path : path.split('/'),
+		data,
+		[intent]: true
+	};
 }
 
 Intent.scope = function(...scope) {
