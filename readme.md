@@ -14,7 +14,7 @@ function controller(intent) {
 	switch(intent.data.url) {
 		case '/foo':
 			return Intent(['render'], {greet: 'world'});
-		defualt:
+		default:
 			return intent.data.url + ' not found';
 	}
 } controller.receives = [['route']];
