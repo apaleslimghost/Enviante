@@ -1,14 +1,14 @@
 {
   "name": "enviante",
-  "version": "2.1.0",
   "description": "Class registry and intent dispatch",
   "main": "lib",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/quarterto/Enviante"
+    "url": "https://github.com/quarterto/Enviante"
   },
   "keywords": [
     "dispatch",
@@ -33,6 +33,7 @@
     "dirty-chai": "^1.2.1",
     "mocha": "^2.2.4",
     "sinon": "^1.14.1",
-    "sinon-chai": "^2.7.0"
+    "sinon-chai": "^2.7.0",
+    "semantic-release": "^4.3.5"
   }
 }
