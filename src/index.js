@@ -3,7 +3,7 @@ var Bacon = require('baconjs');
 
 export var dispatcher = (receivers, init = {}) => {
 	var receiverMap = receivers.reduce(
-		(map, receiver) => map.updateIn(receiver.receives, current => current ? current.push(receiver) : im.List.of(receiver)),
+		(map, receiver, path) => map.updateIn(Array.isArray(path) ? path : receiver.receives, current => current ? current.push(receiver) : im.List.of(receiver)),
 		new im.Map()
 	);
 	var state = im.fromJS(init);
