@@ -2,7 +2,7 @@ import {Map, Iterable, List, fromJS as immutableFromJS} from 'immutable';
 import {fromBinder as baconFromBinder, Bus} from 'baconjs';
 import mapToTree from '@quarterto/immutable-map-to-tree';
 
-export default function dispatcher(receivers, init = {}) {
+module.exports = function dispatcher(receivers, init = {}) {
 	var receiverTree = mapToTree(receivers);
 	var state = immutableFromJS(init);
 	
