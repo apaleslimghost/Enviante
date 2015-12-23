@@ -16,7 +16,7 @@ export default function dispatcher(receivers, init = {}) {
 		stream.plug(baconFromBinder(sink => {
 			receivers.forEach(receiver => {
 				var result = receiver(state.toJS(), (...args) => stream.plug(dispatch(...args)));
-				if(result) sink(result);
+				if(typeof result !== 'undefined') sink(result);
 			});
 		}));
 
