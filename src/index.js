@@ -1,45 +1,28 @@
-var σ = require('highland');
-var Intent = require('../intent');
-var find = require('array-find');
-var debug = require('debug')('enviante');
+var im = require('immutable');
+var Bacon = require('baconjs');
 
-function streamCoerce(s) {
-	if(!s)               return σ([]);
-	if(σ.isStream(s))    return s;
-	if(Array.isArray(s)) return σ(s);
-	return σ([s]);
-}
+export var intent = (path, modify = (i => i), defaultValue = null) => ({path, modify, defaultValue});
 
-class Dispatcher {
-	constructor(receivers = []) {
-		this.registry = receivers;
-	}
+export var dispatcher = (receivers, init = {}) => {
+	var receiverMap = receivers.reduce(
+		(map, receiver) => map.updateIn(receiver.receives, current => current ? current.push(receiver) : im.List.of(receiver)),
+		new im.Map()
+	);
+	var state = im.fromJS(init);
+	var dispatch = intent => {
+		state = state.updateIn(intent.path, intent.defaultValue, intent.modify);
+		var found = receiverMap.getIn(intent.path, new im.Map());
+		var receivers = im.Iterable.isIterable(found) ? found.valueSeq().flatten() : im.List.of(found);
+		var stream = new Bacon.Bus();
+		stream.plug(Bacon.fromBinder(sink => {
+			receivers.forEach(receiver => {
+				var result = receiver(state.toJS(), subIntent => stream.plug(dispatch(subIntent)));
+				if(result) sink(result);
+			});
+		}));
+		return stream;
+	};
+	return dispatch;
+};
 
-	canReceive(intent, receiver) {
-		return receiver.receives.some(path =>
-			path.every((part, i) => intent.path[i] === part)
-		);
-	}
-
-	dispatch(intent) {
-		var receiver = find(this.registry, receiver => this.canReceive(intent, receiver));
-		if(receiver) {
-			return streamCoerce(receiver(intent)).flatMap(
-				i => Intent.isIntent(i) ? this.dispatch(i) : streamCoerce(i)
-			);
-		}
-
-		debug('Unhandled intent: ' + JSON.stringify(intent.path));
-		return σ([]);
-	}
-
-	removeReceiver(receiver) {
-		this.registry = this.registry.filter(r => r !== receiver);
-	}
-
-	register(receiver) {
-		this.registry.push(receiver);
-	}
-}
-
-module.exports = Dispatcher;
+export var receives = (receives, fn) => (fn.receives = receives, fn);

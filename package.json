@@ -23,9 +23,11 @@
   "homepage": "https://github.com/quarterto/Enviante",
   "dependencies": {
     "array-find": "^1.0.0",
+    "baconjs": "^0.7.83",
     "debug": "^2.2.0",
     "es6-symbol": "^2.0.1",
-    "highland": "^2.4.0"
+    "highland": "^2.4.0",
+    "immutable": "^3.7.6"
   },
   "devDependencies": {
     "babel": "^5.1.11",
