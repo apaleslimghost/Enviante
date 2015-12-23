@@ -1,15 +1,13 @@
 var im = require('immutable');
 var Bacon = require('baconjs');
+var mapToTree = require('@quarterto/immutable-map-to-tree');
 
-export var dispatcher = (receivers, init = {}) => {
-	var receiverMap = receivers.reduce(
-		(map, receiver, path) => map.updateIn(Array.isArray(path) ? path : receiver.receives, current => current ? current.push(receiver) : im.List.of(receiver)),
-		new im.Map()
-	);
+export default function dispatcher(receivers, init = {}) {
+	var receiverTree = mapToTree(receivers);
 	var state = im.fromJS(init);
-	var dispatch = (path, modify = (a => a), defaultValue = null) => {
+	return function dispatch(path, modify = (a => a), defaultValue = null) {
 		state = state.updateIn(path, defaultValue, modify);
-		var found = receiverMap.getIn(path, new im.Map());
+		var found = receiverTree.getIn(path, new im.Map());
 		var receivers = im.Iterable.isIterable(found) ? found.valueSeq().flatten() : im.List.of(found);
 		var stream = new Bacon.Bus();
 		stream.plug(Bacon.fromBinder(sink => {
@@ -20,7 +18,4 @@ export var dispatcher = (receivers, init = {}) => {
 		}));
 		return stream;
 	};
-	return dispatch;
 };
-
-export var receives = (receives, fn) => (fn.receives = receives, fn);

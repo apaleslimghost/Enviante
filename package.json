@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/quarterto/Enviante",
   "dependencies": {
+    "@quarterto/immutable-map-to-tree": "^1.0.0",
     "array-find": "^1.0.0",
     "baconjs": "^0.7.83",
     "debug": "^2.2.0",
