@@ -6,7 +6,7 @@ export default function dispatcher(receivers, init = {}) {
 	var receiverTree = mapToTree(receivers);
 	var state = immutableFromJS(init);
 	
-	return function dispatch(path, modify = (a => a), defaultValue = null) {
+	return function dispatch(path = [], modify = (a => a), defaultValue = null) {
 		var found = receiverTree.getIn(path, new Map());
 		var receivers = Iterable.isIterable(found) ? found.valueSeq().flatten() : List.of(found);
 		var stream = new Bus();
