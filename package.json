@@ -31,10 +31,12 @@
     "immutable": "^3.7.6"
   },
   "devDependencies": {
+    "@quarterto/nthback": "^1.1.0",
     "babel": "^6.3.26",
     "babel-cli": "^6.3.17",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.3.13",
     "chai": "^2.2.0",
     "dirty-chai": "^1.2.1",
     "mocha": "^2.2.4",

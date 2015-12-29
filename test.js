@@ -1,95 +1,111 @@
 var {expect} = require('chai').use(require('sinon-chai')).use(require('dirty-chai'));
 var sinon = require('sinon');
-var Dispatcher = require('./');
-var Intent = require('./lib/intent');
+var nthback = require('@quarterto/nthback');
+var dispatcher = require('./');
+
+var runObservable = o => o.onValue(() => {});
 
 describe('Dispatcher', () => {
-	it('can be instantiated', () => {
-		var d = new Dispatcher;
-		expect(d).to.be.an.instanceof(Dispatcher);
-	});
-
-	it('can register a thing', () => {
-		var d = new Dispatcher;
-		d.register(function () {});
-	});
-
-	it('can dispatch a thing', () => {
-		var d = new Dispatcher;
-		d.dispatch({});
-	});
-
-	it('can take an array of things to register', () => {
-		function r() {}
-		var d = new Dispatcher([r]);
-		expect(d.registry).to.contain(r);
+	it('returns a dispatch function', () => {
+		var d = dispatcher();
+		expect(d).to.be.a('function');
 	});
 
 	describe('dispatch', () => {
+		it('should return an observable', () => {
+			var d = dispatcher();
+			expect(d()).to.have.property('_isObservable');
+		});
+
 		it('should send a thing to the thing that can receive it', () => {
-			var d = new Dispatcher;
 			var r = sinon.spy();
-			r.receives = [['foo']];
-			d.register(r);
-			d.dispatch({path: ['foo']});
+			var d = dispatcher([
+				[['foo'], r]
+			]);
+			runObservable(d(['foo']));
 			expect(r).to.have.been.called();
 		});
 
-		it('should pass the intent to the thing', () => {
-			var d = new Dispatcher;
+		it('should pass the state to the thing', () => {
 			var r = sinon.spy();
-			r.receives = [['foo']];
-			d.register(r);
-			var i = {path: ['foo']};
-			d.dispatch(i);
-			expect(r).to.have.been.calledWith(i);
+			var d = dispatcher([
+				[['foo'], r]
+			]);
+			runObservable(d(['foo']));
+			expect(r.lastCall.args[0]).to.deep.equal({});
 		});
 
-		it('should call a thing with a subpath', () => {
-			var d = new Dispatcher;
+		it('should call all nested things', () => {
 			var r = sinon.spy();
-			r.receives = [['foo']];
-			d.register(r);
-			d.dispatch({path: ['foo', 'bar']});
+			var s = sinon.spy();
+			var d = dispatcher([
+				[['foo', 'bar'], r],
+				[['foo', 'baz'], s],
+			]);
+			runObservable(d(['foo']));
 			expect(r).to.have.been.called();
-		});
-
-		it('shouldn\'t call a subpath thing without a subpath', () => {
-			var d = new Dispatcher;
-			var r = sinon.spy();
-			r.receives = [['foo', 'bar']];
-			d.register(r);
-			d.dispatch({path: ['foo']});
-			expect(r).not.to.have.been.called();
-		});
-
-		it('should dispatch the return values', () => {
-			var d = new Dispatcher;
-
-			var r = sinon.stub(); r.receives = [['foo']]; r.returns([Intent(['bar']), Intent(['baz'])]);
-			var s = sinon.spy(); s.receives = [['bar']];
-			var t = sinon.spy(); t.receives = [['baz']];
-
-			d.register(r);
-			d.register(s);
-			d.register(t);
-
-			d.dispatch({path: ['foo']}).apply(() => {});
 			expect(s).to.have.been.called();
-			expect(t).to.have.been.called();
 		});
 
-		it('should stream non-intent values', function(done) {
-			var d = new Dispatcher;
-			var r = sinon.stub(); r.receives = [['foo']];
-			r.returns('bar');
+		it('should provide dispatch to receivers', () => {
+			var r = sinon.spy();
+			var d = dispatcher([
+				[['foo'], (_, dispatch) => { dispatch(['bar']); }],
+				[['bar'], r]
+			]);
+			runObservable(d(['foo']));
+			expect(r).to.have.been.called();
+		});
 
-			d.register(r);
-
-			d.dispatch({path: ['foo']}).toArray(xs => {
-				expect(xs).to.eql(['bar']);
+		it('should observe return values', done => {
+			var r = sinon.stub().returns(5);
+			var d = dispatcher([
+				[['foo'], r]
+			]);
+			var o = d(['foo']);
+			var s = sinon.spy();
+			o.onValue(s);
+			o.onEnd(() => {
+				expect(s).to.have.been.calledOnce();
+				expect(s).to.have.been.calledWith(5);
 				done();
 			});
+			o.end();
 		});
+	
+		it('should observe return values of subdispatches', done => {
+			var r = sinon.stub().returns(2);
+			var d = dispatcher([
+				[['foo'], (_, dispatch) => { dispatch(['bar']); return 1; }],
+				[['bar'], r]
+			]);
+			var o = d(['foo']);
+			var s = sinon.spy();
+			o.onValue(s);
+			o.onEnd(() => {
+				expect(s).to.have.been.calledTwice();
+				expect(s).to.have.been.calledWith(1);
+				expect(s).to.have.been.calledWith(2);
+				done();
+			});
+			o.end();
+		});
+
+		it('should update the state at the path with the transformer', done => {
+			var d = dispatcher([
+				[['foo'], (state) => { expect(state).to.deep.equal({foo: 1}); done(); }],
+			]);
+			runObservable(d(['foo'], () => 1));
+		});
+
+		it('should update the state on nested dispatch', done => {
+			var doneTwice = nthback(2)(done);
+			var d = dispatcher([
+				[['foo'], (state, dispatch) => { expect(state).to.deep.equal({foo: 1}); dispatch(['bar'], () => 2); doneTwice(); }],
+				[['bar'], (state) => { expect(state).to.deep.equal({foo: 1, bar: 2}); doneTwice(); }]
+			]);
+			runObservable(d(['foo'], () => 1));
+		});
+
 	});
 });

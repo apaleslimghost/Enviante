@@ -11,7 +11,7 @@ lib/%.js: src/%.js
 	babel $(BABEL_OPTS) -o $@ $<
 
 test: all test.js
-	mocha -r babel/register
+	mocha -r babel-register
 
 clean:
 	rm -rf lib
