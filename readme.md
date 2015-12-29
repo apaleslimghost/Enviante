@@ -53,7 +53,7 @@ Since `dispatch` returns a lazy event stream, nothing actually runs until you st
 TODO
 ----
 
-More examples, full API documentation, annotated source?
+More examples, full API documentation, namecheck redux/om/cycle, annotated source?
 
 install
 ---
