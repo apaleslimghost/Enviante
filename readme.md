@@ -57,7 +57,7 @@ Removes any previous subscription to the path. Future subscriptions will still c
 Inspiration
 ---
 
-[Redux](https://github.com/react/redux) and Meteor's [`react-meteor-data`]().
+[Redux](https://github.com/react/redux) and Meteor's [`react-meteor-data`](https://atmospherejs.com/meteor/react-meteor-data).
 
 I love Redux. I find it hard to build my state and components in the top-down way it seems to favour, and mutating state can be nicer than deep immutable updates. I also love Meteor, but Tracker is far too magic.
 
