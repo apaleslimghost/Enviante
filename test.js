@@ -1,4 +1,4 @@
-var {expect} = require('chai').use(require('sinon-chai')).use(require('dirty-chai'));
+var expect = require('@quarterto/chai');
 var sinon = require('sinon');
 var nthback = require('@quarterto/nthback');
 var dispatcher = require('./');
@@ -72,7 +72,7 @@ describe('Dispatcher', () => {
 			});
 			o.end();
 		});
-	
+
 		it('should observe return values of subdispatches', done => {
 			var r = sinon.stub().returns(2);
 			var d = dispatcher([

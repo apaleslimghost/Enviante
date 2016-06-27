@@ -4,7 +4,7 @@
   "description": "Class registry and intent dispatch",
   "main": "lib",
   "scripts": {
-    "test": "make test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
