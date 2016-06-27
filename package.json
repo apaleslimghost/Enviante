@@ -12,7 +12,8 @@
   },
   "keywords": [
     "dispatch",
-    "class",
+    "subscribe",
+    "state",
     "intent"
   ],
   "author": "Matt Brennan <matt@153.io>",
@@ -24,34 +25,12 @@
   "dependencies": {
     "@quarterto/immutable-map-to-tree": "^1.0.0",
     "@quarterto/merge-sets-deep": "^1.0.0",
-    "array-find": "^1.0.0",
-    "baconjs": "^0.7.83",
-    "debug": "^2.2.0",
-    "es6-symbol": "^2.0.1",
-    "highland": "^2.4.0",
-    "immutable": "^3.7.6",
     "lodash.get": "^4.2.1",
     "lodash.update": "^4.9.0"
   },
   "devDependencies": {
-    "@quarterto/nthback": "^1.1.0",
-    "babel": "^6.3.26",
-    "babel-cli": "^6.3.17",
-    "babel-plugin-add-module-exports": "^0.1.2",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-register": "^6.3.13",
-    "chai": "^2.2.0",
-    "dirty-chai": "^1.2.1",
+    "@quarterto/chai": "^1.1.0",
     "mocha": "^2.2.4",
-    "sinon": "^1.14.1",
-    "sinon-chai": "^2.7.0"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ],
-    "plugins": [
-      "add-module-exports"
-    ]
+    "sinon": "^1.14.1"
   }
 }
