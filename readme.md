@@ -4,63 +4,72 @@
 	<a href="https://travis-ci.org/quarterto/Enviante"><img src="https://travis-ci.org/quarterto/Enviante.svg"></a>
 </h1>
 
-Predictable, decoupled, nested, streaming state for applications.
-
-Dispatch
-----------
-
-The `dispatch` function is the crux of Enviante. All interactions, database updates, `fetch` responses, whatever, will result in a call to `dispatch` to update some part of the state. It returns a stream of values returned by your application functions.
-
-State
-------
-
-State in Enviante is an immutable tree. Receiver functions are given a copy of the state; local modifications mean nothing. The only way to update the state is to dispatch an intent.
-
-Intents
----------
-
-An intent is a function that updates a slice of state. It's what you pass to `dispatch`. Given an initial state of `{foo: 5}`, dispatching the intent `function(state) { return state * 2 }` to the path `['foo']` will result in the state `{foo: 10}`. If your intents are pure functions (i.e. they do not have side effects or rely on external state), your state is defined entirely by the intents that have been dispatched so far.
-
-Receivers
-------------
-
-A receiver is a function that is called when a particular slice of state is updated. It's given the entire state, and a copy of dispatch. Return values from these functions are streamed in the return value of `dispatch`, starting with the dispatch that directly triggered this update and bubbling up to the root dispatch. This allows receivers to return e.g. stateless React components, which are rendered by the root dispatch.
-
-Dispatcher
--------------
-
-Dispatcher ties everything together. It takes a tree of receivers and returns the root dispatch function:
-
-```js
-var dispatcher = require('enviante');
-
-function foo(state, dispatch) {
-  // call dispatch here to keep updating the state
-  return state.foo;
-}
-
-var dispatch = dispatcher([[['foo'], foo]]);
-dispatch(['foo'], function() {
-  return 5;
-}).onValue(console.log); // logs 5
-```
-
-Streaming
-------------
-
-Since `dispatch` returns a lazy event stream, nothing actually runs until you start the stream, by calling `.onValue(fn)`. This also lets you do something with your receivers' return values.
-
-TODO
-----
-
-More examples, full API documentation, namecheck redux/om/cycle, annotated source?
-
-install
----
-```
+```sh
 npm install enviante
 ```
 
-licence
+Decoupled, predictable application state. Subscribe anywhere, dispatch anywhere.
+
+```js
+import createStore from 'enviante';
+const connect = createStore({count: 0});
+
+connect((subscribe) => {
+	document.getElementById('counter').innerHTML = subscribe('count');
+});
+
+connect((subscribe, dispatch) => {
+	document.getElementById('increment').addEventListener('click', () => {		
+		dispatch('count', count => count + 1);
+	});
+});
+
+```
+
+`connect = createStore(state)`
+---
+
+Create a new store with an initial state. Returns a function to connect to the store.
+
+`connect(receiver)`
+---
+
+Sets up a connection from the store via the receiver. The function is called with the arguments `subscribe`, `dispatch`, and `unsubscribe`. Call `subscribe` to register a subscription to part of the state: when the state changes, the receiver is called again. Call `dispatch` to change part of the state and notify subscribers. Call `unsubscribe` to remove subscriptions.
+
+The receiver is called once, immediately. It will only be called again if you `subscribe` to any state. If you don't call `subscribe`, it's safe to register event handlers etc. in here.
+
+`subscribe(['state', 'path'], defaultValue)`
+---
+
+Returns the nested state value at the path, falling back to a default value. Future dispatches to this path (or a sub-path) will call the receiver again.
+
+`dispatch(['state', 'path'], updater)`
+---
+Modifies the nested state value at the path with an updater function. The updater is called with the previous value, and its return value replaces the state at the path. If the updater returns undefined, the previous value is used. If the value is an object, mutations will be kept.
+
+Any previous subscriptions at this path (or a sub-path) will call the receiver again.
+
+`unsubscribe(['state', 'path'])`
+---
+
+Removes any previous subscription to the path. Future subscriptions will still cause reruns.
+
+Inspiration
+---
+
+[Redux](https://github.com/react/redux) and Meteor's [`react-meteor-data`]().
+
+I love Redux. I find it hard to build my state and components in the top-down way it seems to favour, and mutating state can be nicer than deep immutable updates. I also love Meteor, but Tracker is far too magic.
+
+Enviante lets you imbue any part of your application with an arbitrary chunk of state. If your dispatches are pure, your state is predicable. Since each dispatch only sees a small part of the state, it's also safe to mutate in-place.
+
+History
+---
+
+Versions 1 and 2: Highland streams. "Receivers" that receive "Intents" and return a stream of Intents. Hard to reason about laziness, need to manually drain everything.
+
+Version 3: Bacon streams. Concept of nested state appears. All receivers are passed in as a tree on init. Still a bunch of internal mystery meat, still weird laziness constraints.
+
+Licence
 ---
 MIT
