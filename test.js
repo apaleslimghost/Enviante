@@ -1,6 +1,5 @@
 var expect = require('@quarterto/chai');
 var sinon = require('sinon');
-var nthback = require('@quarterto/nthback');
 var createStore = require('./');
 
 describe('enviante', () => {
