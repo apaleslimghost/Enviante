@@ -1,12 +1,12 @@
-var get = require('lodash.get');
-var update = require('lodash.update');
-var mergeSetsDeep = require('@quarterto/merge-sets-deep');
+const get = require('lodash.get');
+const update = require('lodash.update');
+const mergeSetsDeep = require('@quarterto/merge-sets-deep');
 
 module.exports = initialState => {
-	var state = initialState || {};
-	var subscribers = {};
+	const state = initialState || {};
+	const subscribers = {};
 	return receiver => {
-		var runReceiver = () => receiver(
+		const runReceiver = () => receiver(
 			(path, defaultValue) => { // subscribe
 				update(
 					subscribers,
