@@ -28,7 +28,7 @@
   "dependencies": {
     "@quarterto/get-path": "^1.1.0",
     "@quarterto/merge-sets-deep": "^1.1.0",
-    "@quarterto/update-path": "^1.2.0",
+    "@quarterto/update-path": "^1.2.0"
   },
   "devDependencies": {
     "@quarterto/chai": "^1.1.0",
