@@ -1,6 +1,6 @@
 {
   "name": "enviante",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Class registry and intent dispatch",
   "main": "index.js",
   "webpack": "index.js",
