@@ -1,5 +1,5 @@
-const get = require('lodash.get');
-const update = require('lodash.update');
+const get = require('@quarterto/get-path');
+const update = require('@quarterto/update-path');
 const mergeSetsDeep = require('@quarterto/merge-sets-deep');
 
 module.exports = initialState => {

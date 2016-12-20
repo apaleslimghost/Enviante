@@ -3,7 +3,8 @@
   "version": "4.0.1",
   "description": "Class registry and intent dispatch",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "prepublish": "browserify -g bubleify --standalone enviante index.js -o dist.js"
   },
   "repository": {
     "type": "git",
@@ -22,13 +23,18 @@
   },
   "homepage": "https://github.com/quarterto/Enviante",
   "dependencies": {
+    "@quarterto/get-path": "^1.1.0",
     "@quarterto/immutable-map-to-tree": "^1.0.0",
-    "@quarterto/merge-sets-deep": "^1.0.0",
+    "@quarterto/merge-sets-deep": "^1.1.0",
+    "@quarterto/set-union": "^1.1.0",
+    "@quarterto/update-path": "^1.2.0",
     "lodash.get": "^4.2.1",
     "lodash.update": "^4.9.0"
   },
   "devDependencies": {
     "@quarterto/chai": "^1.1.0",
+    "browserify": "^13.1.1",
+    "bubleify": "^0.7.0",
     "mocha": "^2.2.4",
     "sinon": "^1.14.1"
   }
