@@ -3,10 +3,11 @@
   "version": "4.0.1",
   "description": "Class registry and intent dispatch",
   "main": "index.js",
+  "webpack": "index.js",
   "browser": "dist.js",
   "scripts": {
     "test": "mocha",
-    "prepublish": "browserify -g bubleify --standalone enviante index.js -o dist.js"
+    "prepublish": "browserify -g bubleify --no-bf --standalone enviante index.js -o dist.js"
   },
   "repository": {
     "type": "git",
