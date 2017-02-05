@@ -8,11 +8,12 @@ describe('enviante', () => {
 		var first = true;
 
 		connect((subscribe) => {
+			const thing = subscribe('thing');
 			if(first) {
-				expect(subscribe('thing')).to.equal(1);
+				expect(thing).to.equal(1);
 				first = false;
 			} else {
-				expect(subscribe('thing')).to.equal(2);
+				expect(thing).to.equal(2);
 				done();
 			}
 		});
