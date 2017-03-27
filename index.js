@@ -5,9 +5,10 @@ const mergeSetsDeep = require('@quarterto/merge-sets-deep');
 module.exports = initialState => {
 	const state = initialState || {};
 	const subscribers = {};
+
 	return receiver => {
-		const runReceiver = () => receiver(
-			(path, defaultValue) => { // subscribe
+		const runReceiver = meta => {
+			const subscribe = (path, defaultValue) => {
 				update(
 					subscribers,
 					path,
@@ -15,15 +16,15 @@ module.exports = initialState => {
 				);
 
 				return get(state, path, defaultValue);
-			},
+			};
 
-			(path, fn) => { // dispatch
+			const dispatch = (path, fn, meta) => {
 				update(state, path, fn);
 				return Array.from(mergeSetsDeep(get(subscribers, path, [])))
-					.map(sub => sub());
-			},
+					.map(sub => sub(meta));
+			};
 
-			path => { // unsubscribe
+			const unsubscribe = path => {
 				update(
 					subscribers,
 					path,
@@ -32,8 +33,17 @@ module.exports = initialState => {
 						return pathSubs;
 					}
 				);
-			}
-		);
+			};
+
+			return receiver(
+				Object.assign(subscribe, {
+					subscribe, dispatch, unsubscribe, meta,
+				}),
+				dispatch,
+				unsubscribe,
+				meta
+			);
+		};
 
 		return runReceiver();
 	};
