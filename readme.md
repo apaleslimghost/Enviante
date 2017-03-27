@@ -14,11 +14,11 @@ Decoupled, predictable application state. Subscribe anywhere, dispatch anywhere.
 import createStore from 'enviante';
 const connect = createStore({count: 0});
 
-connect((subscribe) => {
+connect(({subscribe}) => {
 	document.getElementById('counter').innerHTML = subscribe('count');
 });
 
-connect((subscribe, dispatch) => {
+connect(({dispatch}) => {
 	document.getElementById('increment').addEventListener('click', () => {		
 		dispatch('count', count => count + 1);
 	});
