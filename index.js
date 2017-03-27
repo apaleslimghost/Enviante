@@ -40,8 +40,7 @@ module.exports = initialState => {
 					subscribe, dispatch, unsubscribe, meta,
 				}),
 				dispatch,
-				unsubscribe,
-				meta
+				unsubscribe
 			);
 		};
 

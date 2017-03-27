@@ -31,10 +31,10 @@ connect((subscribe, dispatch) => {
 
 Create a new store with an initial state. Returns a function to connect to the store.
 
-`connect(receiver)`
+`connect(receiver: ({subscribe, dispatch, unsubscribe, meta}))`
 ---
 
-Sets up a connection from the store via the receiver. The function is called with the arguments `subscribe`, `dispatch`, and `unsubscribe`. Call `subscribe` to register a subscription to part of the state: when the state changes, the receiver is called again. Call `dispatch` to change part of the state and notify subscribers. Call `unsubscribe` to remove subscriptions.
+Sets up a connection from the store via the receiver. The function is called an object containing keys `subscribe`, `dispatch`, `unsubscribe`, and `meta`. Call `subscribe` to register a subscription to part of the state: when the state changes, the receiver is called again. Call `dispatch` to change part of the state and notify subscribers. Call `unsubscribe` to remove subscriptions. `meta` is information passed along with a `dispatch`, see [below](#dispatchstate-path-updater).
 
 The receiver is called once, immediately. It will only be called again if you `subscribe` to any state. If you don't call `subscribe`, it's safe to register event handlers etc. in here.
 
@@ -43,11 +43,11 @@ The receiver is called once, immediately. It will only be called again if you `s
 
 Returns the nested state value at the path, falling back to a default value. Future dispatches to this path (or a sub-path) will call the receiver again.
 
-`dispatch(['state', 'path'], updater)`
+`dispatch(['state', 'path'], updater, meta)`
 ---
 Modifies the nested state value at the path with an updater function. The updater is called with the previous value, and its return value replaces the state at the path. If the updater returns undefined, the previous value is used. If the value is an object, mutations will be kept.
 
-Any previous subscriptions at this path (or a sub-path) will call the receiver again.
+Any previous subscriptions at this path (or a sub-path) will call the receiver again. The last argument, `meta`, is passed along to receivers, which is useful for things like ignoring updates from certain sources.
 
 `unsubscribe(['state', 'path'])`
 ---
