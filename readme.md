@@ -31,7 +31,7 @@ connect((subscribe, dispatch) => {
 
 Create a new store with an initial state. Returns a function to connect to the store.
 
-`connect(receiver: ({subscribe, dispatch, unsubscribe, meta}))`
+`connect(receiver: ({subscribe, dispatch, unsubscribe, meta}) => {})`
 ---
 
 Sets up a connection from the store via the receiver. The function is called an object containing keys `subscribe`, `dispatch`, `unsubscribe`, and `meta`. Call `subscribe` to register a subscription to part of the state: when the state changes, the receiver is called again. Call `dispatch` to change part of the state and notify subscribers. Call `unsubscribe` to remove subscriptions. `meta` is information passed along with a `dispatch`, see [below](#dispatchstate-path-updater).
