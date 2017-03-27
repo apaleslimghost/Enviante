@@ -6,7 +6,7 @@ module.exports = initialState => {
 	const state = initialState || {};
 	const subscribers = {};
 
-	return receiver => {
+	return (receiver, initialMeta) => {
 		const runReceiver = meta => {
 			const subscribe = (path, defaultValue) => {
 				update(
@@ -44,6 +44,6 @@ module.exports = initialState => {
 			);
 		};
 
-		return runReceiver();
+		return runReceiver(initialMeta);
 	};
 };
