@@ -2,11 +2,11 @@ const get = require('@quarterto/get-path');
 const update = require('@quarterto/update-path');
 const mergeSetsDeep = require('@quarterto/merge-sets-deep');
 
-module.exports = initialState => {
+module.exports = (initialState, initialMeta) => {
 	const state = initialState || {};
 	const subscribers = {};
 
-	return (receiver, initialMeta) => {
+	return receiver => {
 		const runReceiver = meta => {
 			const subscribe = (path, defaultValue) => {
 				update(
